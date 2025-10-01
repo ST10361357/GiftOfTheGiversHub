@@ -1,0 +1,13 @@
+﻿namespace GiftOfTheGiversHub.Models
+{
+    public class Alert
+    {
+        public int AlertId { get; set; }//primary key
+        public int ProjectId { get; set; }
+        public string Message { get; set; }
+        public DateTime SentDate { get; set; }
+        public string Channel { get; set; }// email
+
+
+    }
+}
