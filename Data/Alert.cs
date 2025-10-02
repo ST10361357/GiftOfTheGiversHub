@@ -8,6 +8,8 @@
         public DateTime SentDate { get; set; }
         public string Channel { get; set; }// email
 
+        public Project Project { get; set; } // refer  to the Project class property
+
 
     }
 }

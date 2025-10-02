@@ -7,5 +7,9 @@
         public DateTime Date { get; set; }
         public string PayMethod { get; set; }//card & details
         public int DonorID { get; set; }// foreign key
+
+        public Donor Donor { get; set; } // reference donor class property
+        public ICollection<Supply> Supplies { get; set; } // Supplies funded by donation
+
     }
 }

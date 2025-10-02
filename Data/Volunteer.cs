@@ -8,5 +8,7 @@
         public string VolunteerPhone { get; set; }
         public string Skill { get; set; }
         public string Availability { get; set; }
+
+        public ICollection<Assignment> Assignments { get; set; } // Projects assigned to volunteer
     }
 }
