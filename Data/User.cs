@@ -1,4 +1,4 @@
-﻿namespace GiftOfTheGiversHub.Models
+﻿namespace GiftOfTheGiversHub.Data
 {
     public class User
     {
