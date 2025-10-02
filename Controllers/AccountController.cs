@@ -1,15 +1,23 @@
 ﻿using GiftOfTheGiversHub.Data;
+using GiftOfTheGiversHub.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace GiftOfTheGiversHub.Controllers
 {
-    public class AccountController
+    public class AccountController : Controller
     {
+        private readonly ApplicationDbContext _context;
 
-        [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        public AccountController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        [HttpPost]//reggister process
+        public async Task<IActionResult> Register(RegisterModel model)
         {
             if (ModelState.IsValid)
             {
@@ -35,6 +43,39 @@ namespace GiftOfTheGiversHub.Controllers
             }
 
             // If validation fails, return the form with errors
+            return View(model);
+        }
+
+        // Login process
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LogInModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _context.Users
+                    .FirstOrDefaultAsync(u => u.UserEmail == model.UserEmail);
+
+                if (user != null)
+                {
+                    var hasher = new PasswordHasher<User>();
+                    var result = hasher.VerifyHashedPassword(user, user.Password, model.Password);
+
+                    if (result == PasswordVerificationResult.Success)
+                    {
+                        // will try to Set session or authentication cookie
+                        return RedirectToAction("Index", "Home");
+                    }
+                }
+
+                ModelState.AddModelError("", "Login not successfull, try agains ");
+            }
+
             return View(model);
         }
 
