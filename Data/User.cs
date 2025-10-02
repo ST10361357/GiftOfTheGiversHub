@@ -6,6 +6,6 @@
         public string UserName { get; set; }
         public string UserEmail { get; set; }
         public string Role { get; set; }// Admin, Donor, Volunteer
-        public string PasswordHash { get; set; }
+        public string Password { get; set; }//hashed password
     }
 }
