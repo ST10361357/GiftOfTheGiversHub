@@ -11,6 +11,8 @@ namespace GiftOfTheGiversHub.Data
         }
 
         public DbSet<User> Users { get; set; } //  user table
+        public DbSet<Incident> Incidents { get; set; }//incident
+        public DbSet<Incident> Projects { get; set; }//incident
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
