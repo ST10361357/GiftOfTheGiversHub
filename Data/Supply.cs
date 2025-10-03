@@ -1,6 +1,6 @@
 ﻿namespace GiftOfTheGiversHub.Data
 {
-    public class Supply
+    public class SupplyModel
     {
         public int SupplyId { get; set; }  //primary key
         public int ProjectId { get; set; }

@@ -13,6 +13,8 @@ namespace GiftOfTheGiversHub.Data
         public DbSet<User> Users { get; set; } //  user table
         public DbSet<Incident> Incidents { get; set; }//incident
         public DbSet<Incident> Projects { get; set; }//incident
+        public DbSet<SupplyModel> Supplies { get; set; }//resource
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

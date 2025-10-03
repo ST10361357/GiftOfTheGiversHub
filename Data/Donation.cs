@@ -9,7 +9,7 @@
         public int DonorID { get; set; }// foreign key
 
         public Donor Donor { get; set; } // reference donor class property
-        public ICollection<Supply> Supplies { get; set; } // Supplies funded by donation
+        public ICollection<SupplyModel> Supplies { get; set; } // Supplies funded by donation
 
     }
 }
