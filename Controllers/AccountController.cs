@@ -1,8 +1,8 @@
-﻿using GiftOfTheGiversHub.Data;
-using GiftOfTheGiversHub.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using GiftOfTheGiversHub.Data;
+using GiftOfTheGiversHub.Models;
 using System.Threading.Tasks;
 
 namespace GiftOfTheGiversHub.Controllers
@@ -16,16 +16,34 @@ namespace GiftOfTheGiversHub.Controllers
             _context = context;
         }
 
-        [HttpPost]//reggister process
-        public async Task<IActionResult> Register(RegisterModel model)
+        // GET: Register page
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        // POST: Register process
+        [HttpPost]
+        public async Task<IActionResult> Register(AppUserModel model)
         {
             if (ModelState.IsValid)
             {
-                //Hashing  password before saving
+                // Check if email already exists
+                var existingUser = await _context.Users
+                    .FirstOrDefaultAsync(u => u.UserEmail == model.UserEmail);
+
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("UserEmail", "Email already registered.");
+                    return View(model);
+                }
+
+                // Hash password
                 var hasher = new PasswordHasher<User>();
                 string hashedPassword = hasher.HashPassword(null, model.Password);
 
-                // new User object
+                // Create new user
                 var user = new User
                 {
                     UserName = model.UserName,
@@ -34,27 +52,27 @@ namespace GiftOfTheGiversHub.Controllers
                     Password = hashedPassword
                 };
 
-                // Save to db
+                // Save to database
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
 
-                // Redirect after successful registration
+                // Redirect to login
                 return RedirectToAction("Login");
             }
 
-            // If validation fails, return the form with errors
             return View(model);
         }
 
-        // Login process
+        // GET: Login page
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
 
+        // POST: Login process
         [HttpPost]
-        public async Task<IActionResult> Login(LogInModel model)
+        public async Task<IActionResult> Login(AppUserModel model)
         {
             if (ModelState.IsValid)
             {
@@ -68,16 +86,16 @@ namespace GiftOfTheGiversHub.Controllers
 
                     if (result == PasswordVerificationResult.Success)
                     {
-                        // will try to Set session or authentication cookie
+                        // TODO: Set session or authentication cookie here
                         return RedirectToAction("Index", "Home");
                     }
                 }
 
-                ModelState.AddModelError("", "Login not successfull, try agains ");
+                ModelState.AddModelError("", "Login unsuccessful. Please try again.");
             }
 
             return View(model);
         }
-
     }
 }
+

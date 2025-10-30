@@ -1,5 +1,31 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@model LogInModel
+
+<h2>Login</h2>
+
+<!-- Login form begins -->
+<form asp-action="Login" method="post">
+    <!-- Username input -->
+    <div>
+        <label asp-for="UserEmail"></label> <!-- Label for username -->
+        <input asp-for="UserEmail" /> <!-- Input field for username -->
+        <span asp-validation-for="UserEmail"></span> <!-- Validation message for username -->
+    </div>
+
+    <!-- Password input -->
+    <div>
+        <label asp-for="Password"></label> <!-- Label for password -->
+        <input asp-for="Password" type="password" /> <!-- Input field for password -->
+        <span asp-validation-for="Password"></span> <!-- Validation message for password -->
+    </div>
+
+    <!-- Submit button -->
+    <button type="submit">Login</button>
+</form>
+
+<!--  client-side validation scripts -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
+
