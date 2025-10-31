@@ -10,11 +10,9 @@ namespace GiftOfTheGiversHub.Data
         {
         }
 
-        public DbSet<User> Users { get; set; } //  user table
-       // public DbSet<Incident> Incidents { get; set; }//incident
-       // public DbSet<Incident> Projects { get; set; }//incident
-        //public DbSet<SupplyModel> Supplies { get; set; }//resource
-
+        // eleminate conflicy with IdentityDbContext.Users
+        public DbSet<User> Users { get; set; }
+        public DbSet<RoleChangeLog> RoleChangeLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -30,3 +28,4 @@ namespace GiftOfTheGiversHub.Data
         }
     }
 }
+

@@ -25,7 +25,7 @@ namespace GiftOfTheGiversHub.Controllers
 
         // POST: Register process
         [HttpPost]
-        public async Task<IActionResult> Register(AppUserModel model)
+        public async Task<IActionResult> Register(UserModel model)
         {
             if (ModelState.IsValid)
             {
@@ -72,7 +72,7 @@ namespace GiftOfTheGiversHub.Controllers
 
         // POST: Login process
         [HttpPost]
-        public async Task<IActionResult> Login(AppUserModel model)
+        public async Task<IActionResult> Login(UserModel model)
         {
             if (ModelState.IsValid)
             {
@@ -86,12 +86,27 @@ namespace GiftOfTheGiversHub.Controllers
 
                     if (result == PasswordVerificationResult.Success)
                     {
-                        // TODO: Set session or authentication cookie here
-                        return RedirectToAction("Index", "Home");
+                        // Redirect based on role
+                        switch (user.Role)
+                        {
+                            case "Admin":
+                                return RedirectToAction("Dashboard", "Admin");
+
+                            case "Donor":
+                                return RedirectToAction("DonorHome", "Donor");
+
+                            case "Volunteer":
+                                return RedirectToAction("VolunteerHome", "Volunteer");
+
+                            default:
+                                return RedirectToAction("Index", "Home");
+                        }
                     }
                 }
 
                 ModelState.AddModelError("", "Login unsuccessful. Please try again.");
+                Console.WriteLine("Login POST triggered");
+
             }
 
             return View(model);

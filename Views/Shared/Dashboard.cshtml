@@ -1,0 +1,35 @@
+﻿@model List<GiftOfTheGiversHub.Models.UserModel>
+
+<h2>Admin Dashboard</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Current Role</th>
+            <th>Assign New Role</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.UserName</td>
+                <td>@user.UserEmail</td>
+                <td>@user.Role</td>
+                <td>
+                    <form asp-action="Dashboard" method="post">
+                        <input type="hidden" name="userId" value="@user.UserId" />
+                        <select name="newRole">
+                            <option>Coordinator</option>
+                            <option>Volunteer Manager</option>
+                            <option>Volunteer</option>
+                        </select>
+                        <button type="submit">Update</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
