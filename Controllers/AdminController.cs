@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace GiftOfTheGiversHub.Controllers
 {
     [Authorize(Roles = "Admin")]
@@ -39,7 +40,6 @@ namespace GiftOfTheGiversHub.Controllers
                 })
                 .ToListAsync();
 
-            //incidents logic
             var incidents = await _context.Incidents
                 .Select(i => new IncidentModel
                 {
@@ -52,16 +52,20 @@ namespace GiftOfTheGiversHub.Controllers
                     UrgencyLevel = i.UrgencyLevel,
                     DateReported = i.DateReported,
                     AssignedVolunteerEmail = i.AssignedVolunteerEmail,
+                    AssignedDonatorEmail = i.AssignedDonatorEmail,
                     Status = i.Status
                 })
                 .ToListAsync();
+
+            var donators = await _context.Donators.ToListAsync();
 
             var model = new AdminDashboardViewModel
             {
                 Admins = allUsers.Where(u => u.Role == "Admin").ToList(),
                 Staff = allUsers.Where(u => u.Role != "Admin").ToList(),
                 Volunteers = allUsers.Where(u => u.Role == "Volunteer").ToList(),
-                Incidents = incidents
+                Incidents = incidents,
+                Donators = donators
             };
 
             return View(model);
@@ -122,6 +126,33 @@ namespace GiftOfTheGiversHub.Controllers
 
             return RedirectToAction("Dashboard");
         }
-    }
 
+        //  Assign Donator to Incident
+        [HttpPost]
+        public async Task<IActionResult> AssignDonator(int incidentId, string donatorEmail)
+        {
+            var currentUserEmail = User.Identity?.Name;
+
+            var currentUser = await _context.Users
+                .FirstOrDefaultAsync(u => u.UserEmail == currentUserEmail);
+
+            if (currentUser == null || currentUser.Role != "Admin")
+            {
+                return Unauthorized();
+            }
+
+            var incident = await _context.Incidents.FindAsync(incidentId);
+            if (incident == null)
+            {
+                return NotFound();
+            }
+
+            incident.AssignedDonatorEmail = donatorEmail;
+
+            _context.Incidents.Update(incident);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Dashboard");
+        }
+    }
 }

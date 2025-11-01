@@ -7,5 +7,6 @@
 
         public List<IncidentModel> Incidents { get; set; }
         public List<UserModel> Volunteers { get; set; }
+        public List<DonatorModel> Donators { get; set; }
     }
 }

@@ -11,19 +11,17 @@
     <div class="mb-4 text-center">
         <button class="btn btn-outline-primary" onclick="toggleSection('adminsTable')">Show/Hide Admins</button>
         <button class="btn btn-outline-secondary" onclick="toggleSection('staffTable')">Show/Hide Staff</button>
-        <button class="btn btn-outline-success" onclick="toggleSection('incidentsTable')">Show/Hide Incidents</button>
+        <button class="btn btn-outline-success" onclick="toggleSection('volunteersTable')">Show/Hide Volunteers</button>
+        <button class="btn btn-outline-warning" onclick="toggleSection('donatorsTable')">Show/Hide Donators</button>
+        <button class="btn btn-outline-dark" onclick="toggleSection('incidentsTable')">Show/Hide Incidents</button>
     </div>
 
-    <!-- Admin Users Table -->
+    <!-- Admins Table -->
     <div id="adminsTable" class="mb-5">
-        <h4 class="mb-3">Admin Users</h4>
-        <table class="table table-bordered table-striped table-hover">
+        <h4>Admins</h4>
+        <table class="table table-bordered table-striped">
             <thead class="table-dark">
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                </tr>
+                <tr><th>Name</th><th>Email</th><th>Role</th></tr>
             </thead>
             <tbody>
                 @foreach (var admin in Model.Admins)
@@ -38,28 +36,23 @@
         </table>
     </div>
 
-    <!-- Staff Users Table -->
+    <!-- Staff Table -->
     <div id="staffTable" class="mb-5">
-        <h4 class="mb-3">Staff Users</h4>
-        <table class="table table-bordered table-striped table-hover">
+        <h4>Staff</h4>
+        <table class="table table-bordered table-striped">
             <thead class="table-dark">
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Current Role</th>
-                    <th>Assign New Role</th>
-                </tr>
+                <tr><th>Name</th><th>Email</th><th>Current Role</th><th>Assign New Role</th></tr>
             </thead>
             <tbody>
-                @foreach (var user in Model.Staff)
+                @foreach (var staff in Model.Staff)
                 {
                     <tr>
-                        <td>@user.UserName</td>
-                        <td>@user.UserEmail</td>
-                        <td>@user.Role</td>
+                        <td>@staff.UserName</td>
+                        <td>@staff.UserEmail</td>
+                        <td>@staff.Role</td>
                         <td>
                             <form asp-action="AssignRole" method="post" class="d-flex gap-2">
-                                <input type="hidden" name="userId" value="@user.UserId" />
+                                <input type="hidden" name="userId" value="@staff.UserId" />
                                 <select name="newRole" class="form-select form-select-sm w-auto">
                                     <option value="Coordinator">Coordinator</option>
                                     <option value="Volunteer Manager">Volunteer Manager</option>
@@ -74,10 +67,51 @@
         </table>
     </div>
 
-    <!-- Incident Management Table -->
+    <!-- Volunteers Table -->
+    <div id="volunteersTable" class="mb-5">
+        <h4>Volunteers</h4>
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr><th>Name</th><th>Email</th><th>Role</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var volunteer in Model.Volunteers)
+                {
+                    <tr>
+                        <td>@volunteer.UserName</td>
+                        <td>@volunteer.UserEmail</td>
+                        <td>@volunteer.Role</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Donators Table -->
+    <div id="donatorsTable" class="mb-5">
+        <h4>Donators</h4>
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr><th>Name</th><th>Email</th><th>Donation Type</th><th>Notes</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var donator in Model.Donators)
+                {
+                    <tr>
+                        <td>@donator.DonatorName</td>
+                        <td>@donator.DonatorEmail</td>
+                        <td>@donator.DonationType</td>
+                        <td>@donator.Notes</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Incidents Table -->
     <div id="incidentsTable" class="mb-5">
-        <h4 class="mb-3">Reported Incidents</h4>
-        <table class="table table-bordered table-striped table-hover">
+        <h4>Incidents</h4>
+        <table class="table table-bordered table-striped">
             <thead class="table-dark">
                 <tr>
                     <th>Reporter</th>
@@ -88,7 +122,9 @@
                     <th>Date</th>
                     <th>Status</th>
                     <th>Assigned Volunteer</th>
-                    <th>Assign</th>
+                    <th>Assign Volunteer</th>
+                    <th>Assigned Donator</th>
+                    <th>Assign Donator</th>
                 </tr>
             </thead>
             <tbody>
@@ -115,6 +151,19 @@
                                 <button type="submit" class="btn btn-sm btn-success">Assign</button>
                             </form>
                         </td>
+                        <td>@incident.AssignedDonatorEmail ?? "Unassigned"</td>
+                        <td>
+                            <form asp-action="AssignDonator" method="post" class="d-flex gap-2">
+                                <input type="hidden" name="incidentId" value="@incident.IncidentId" />
+                                <select name="donatorEmail" class="form-select form-select-sm w-auto">
+                                    @foreach (var donator in Model.Donators)
+                                    {
+                                        <option value="@donator.DonatorEmail">@donator.DonatorName</option>
+                                    }
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-warning">Assign</button>
+                            </form>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -132,8 +181,7 @@
 
 <!-- Optional: Hide all sections by default -->
 <style>
-    #adminsTable, #staffTable, #incidentsTable {
+    #adminsTable, #staffTable, #volunteersTable, #donatorsTable, #incidentsTable {
         display: none;
     }
 </style>
-

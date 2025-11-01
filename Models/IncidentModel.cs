@@ -15,6 +15,8 @@ namespace GiftOfTheGiversHub.Models
         public string UrgencyLevel { get; set; }
         public DateTime DateReported { get; set; }
         public string AssignedVolunteerEmail { get; set; }
+
+        public string AssignedDonatorEmail { get; set; }
         public string Status { get; set; } = "Pending";
     }
 
