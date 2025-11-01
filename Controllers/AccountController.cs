@@ -104,8 +104,8 @@ namespace GiftOfTheGiversHub.Controllers
             return user.Role switch
             {
                 "Admin" => RedirectToAction("Dashboard", "Admin"),
-                "Donor" => RedirectToAction("DonorHome", "Donor"),
-                "Volunteer" => RedirectToAction("VolunteerHome", "Volunteer"),
+                "Donor" => RedirectToAction("Donor", "Donor"),
+                "Volunteer" => RedirectToAction("Volunteer", "Volunteer"),
                 _ => RedirectToAction("Index", "Home")
             };
         }

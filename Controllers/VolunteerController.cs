@@ -15,13 +15,13 @@ namespace GiftOfTheGiversHub.Controllers
             _context = context;
         }
 
-        // GET: Volunteer/Create
-        public IActionResult Create()
+        // GET: Volunteer
+        public IActionResult Volunteer()
         {
             return View();
         }
 
-        // POST: Volunteer/Create
+        // POST: Volunteer
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(User user)
@@ -31,7 +31,7 @@ namespace GiftOfTheGiversHub.Controllers
                 return View(user);
             }
 
-            user.Role = "Volunteer"; // ✅ Assign role
+            user.Role = "Volunteer"; 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
