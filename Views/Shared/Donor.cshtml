@@ -1,0 +1,40 @@
+﻿@model GiftOfTheGiversHub.Models.DonatorModel
+
+@{
+    ViewData["Title"] = "Add Donator";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Add New Donator</h2>
+
+    <form asp-action="Create" method="post" class="w-50 mx-auto">
+        <div class="mb-3">
+            <label asp-for="DonatorName" class="form-label">Name</label>
+            <input asp-for="DonatorName" class="form-control" />
+            <span asp-validation-for="DonatorName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="DonatorEmail" class="form-label">Email</label>
+            <input asp-for="DonatorEmail" class="form-control" />
+            <span asp-validation-for="DonatorEmail" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="DonationType" class="form-label">Donation Type</label>
+            <input asp-for="DonationType" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Notes" class="form-label">Notes</label>
+            <textarea asp-for="Notes" class="form-control"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add Donator</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

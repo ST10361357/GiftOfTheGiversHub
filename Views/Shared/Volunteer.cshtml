@@ -1,0 +1,30 @@
+﻿@model GiftOfTheGiversHub.Models.UserModel
+
+@{
+    ViewData["Title"] = "Register Volunteer";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Register New Volunteer</h2>
+
+    <form asp-action="Create" method="post" class="w-50 mx-auto">
+        <div class="mb-3">
+            <label asp-for="UserName" class="form-label">Name</label>
+            <input asp-for="UserName" class="form-control" />
+            <span asp-validation-for="UserName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="UserEmail" class="form-label">Email</label>
+            <input asp-for="UserEmail" class="form-control" />
+            <span asp-validation-for="UserEmail" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-success">Register Volunteer</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
