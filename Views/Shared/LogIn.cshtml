@@ -1,4 +1,4 @@
-﻿@model GiftOfTheGiversHub.Models.UserModel
+﻿@model GiftOfTheGiversHub.Models.LogInModel
 
 
 <h2>Login</h2>
@@ -17,6 +17,7 @@
 
     <!-- Submit button -->
     <button type="submit">Login</button>
+    <button type="button" onclick="location.href='@Url.Action("LandingPage", "Home")'" >Back</button>
 </form>
 
 <!--  client-side validation scripts -->

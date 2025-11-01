@@ -1,35 +1,139 @@
-﻿@model List<GiftOfTheGiversHub.Models.UserModel>
+﻿@model GiftOfTheGiversHub.Models.AdminDashboardViewModel
 
-<h2>Admin Dashboard</h2>
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
 
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Current Role</th>
-            <th>Assign New Role</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model)
-        {
-            <tr>
-                <td>@user.UserName</td>
-                <td>@user.UserEmail</td>
-                <td>@user.Role</td>
-                <td>
-                    <form asp-action="Dashboard" method="post">
-                        <input type="hidden" name="userId" value="@user.UserId" />
-                        <select name="newRole">
-                            <option>Coordinator</option>
-                            <option>Volunteer Manager</option>
-                            <option>Volunteer</option>
-                        </select>
-                        <button type="submit">Update</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Admin Dashboard</h2>
+
+    <!-- Toggle Buttons -->
+    <div class="mb-4 text-center">
+        <button class="btn btn-outline-primary" onclick="toggleSection('adminsTable')">Show/Hide Admins</button>
+        <button class="btn btn-outline-secondary" onclick="toggleSection('staffTable')">Show/Hide Staff</button>
+        <button class="btn btn-outline-success" onclick="toggleSection('incidentsTable')">Show/Hide Incidents</button>
+    </div>
+
+    <!-- Admin Users Table -->
+    <div id="adminsTable" class="mb-5">
+        <h4 class="mb-3">Admin Users</h4>
+        <table class="table table-bordered table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var admin in Model.Admins)
+                {
+                    <tr>
+                        <td>@admin.UserName</td>
+                        <td>@admin.UserEmail</td>
+                        <td>@admin.Role</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Staff Users Table -->
+    <div id="staffTable" class="mb-5">
+        <h4 class="mb-3">Staff Users</h4>
+        <table class="table table-bordered table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Current Role</th>
+                    <th>Assign New Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.Staff)
+                {
+                    <tr>
+                        <td>@user.UserName</td>
+                        <td>@user.UserEmail</td>
+                        <td>@user.Role</td>
+                        <td>
+                            <form asp-action="AssignRole" method="post" class="d-flex gap-2">
+                                <input type="hidden" name="userId" value="@user.UserId" />
+                                <select name="newRole" class="form-select form-select-sm w-auto">
+                                    <option value="Coordinator">Coordinator</option>
+                                    <option value="Volunteer Manager">Volunteer Manager</option>
+                                    <option value="Volunteer">Volunteer</option>
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Incident Management Table -->
+    <div id="incidentsTable" class="mb-5">
+        <h4 class="mb-3">Reported Incidents</h4>
+        <table class="table table-bordered table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Reporter</th>
+                    <th>Type</th>
+                    <th>Location</th>
+                    <th>Description</th>
+                    <th>Urgency</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Assigned Volunteer</th>
+                    <th>Assign</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var incident in Model.Incidents)
+                {
+                    <tr>
+                        <td>@incident.ReporterName</td>
+                        <td>@incident.IncidentType</td>
+                        <td>@incident.Location</td>
+                        <td>@incident.Description</td>
+                        <td>@incident.UrgencyLevel</td>
+                        <td>@incident.DateReported.ToShortDateString()</td>
+                        <td>@incident.Status</td>
+                        <td>@incident.AssignedVolunteerEmail ?? "Unassigned"</td>
+                        <td>
+                            <form asp-action="AssignVolunteer" method="post" class="d-flex gap-2">
+                                <input type="hidden" name="incidentId" value="@incident.IncidentId" />
+                                <select name="volunteerEmail" class="form-select form-select-sm w-auto">
+                                    @foreach (var volunteer in Model.Volunteers)
+                                    {
+                                        <option value="@volunteer.UserEmail">@volunteer.UserName</option>
+                                    }
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-success">Assign</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Toggle Script -->
+<script>
+    function toggleSection(sectionId) {
+        const section = document.getElementById(sectionId);
+        section.style.display = section.style.display === "none" ? "block" : "none";
+    }
+</script>
+
+<!-- Optional: Hide all sections by default -->
+<style>
+    #adminsTable, #staffTable, #incidentsTable {
+        display: none;
+    }
+</style>
+

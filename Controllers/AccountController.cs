@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using GiftOfTheGiversHub.Data;
+﻿using GiftOfTheGiversHub.Data;
 using GiftOfTheGiversHub.Models;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace GiftOfTheGiversHub.Controllers
 {
@@ -16,20 +18,19 @@ namespace GiftOfTheGiversHub.Controllers
             _context = context;
         }
 
-        // GET: Register page
+        // GET: Register
         [HttpGet]
         public IActionResult Register()
         {
             return View();
         }
 
-        // POST: Register process
+        // POST: Register
         [HttpPost]
-        public async Task<IActionResult> Register(UserModel model)
+        public async Task<IActionResult> Register(User model)
         {
             if (ModelState.IsValid)
             {
-                // Check if email already exists
                 var existingUser = await _context.Users
                     .FirstOrDefaultAsync(u => u.UserEmail == model.UserEmail);
 
@@ -39,78 +40,75 @@ namespace GiftOfTheGiversHub.Controllers
                     return View(model);
                 }
 
-                // Hash password
                 var hasher = new PasswordHasher<User>();
-                string hashedPassword = hasher.HashPassword(null, model.Password);
+                model.Password = hasher.HashPassword(null, model.Password);
 
-                // Create new user
-                var user = new User
-                {
-                    UserName = model.UserName,
-                    UserEmail = model.UserEmail,
-                    Role = model.Role,
-                    Password = hashedPassword
-                };
-
-                // Save to database
-                _context.Users.Add(user);
+                _context.Users.Add(model);
                 await _context.SaveChangesAsync();
 
-                // Redirect to login
                 return RedirectToAction("Login");
             }
 
             return View(model);
         }
 
-        // GET: Login page
-        [HttpGet]
+        // GET: Login
+        [HttpGet] 
         public IActionResult Login()
-        {
-            return View();
-        }
+        { 
+            return View(); 
+        } 
+        
+        // POST: Login
 
-        // POST: Login process
         [HttpPost]
-        public async Task<IActionResult> Login(UserModel model)
+        public async Task<IActionResult> Login(LogInModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var user = await _context.Users
-                    .FirstOrDefaultAsync(u => u.UserEmail == model.UserEmail);
-
-                if (user != null)
-                {
-                    var hasher = new PasswordHasher<User>();
-                    var result = hasher.VerifyHashedPassword(user, user.Password, model.Password);
-
-                    if (result == PasswordVerificationResult.Success)
-                    {
-                        // Redirect based on role
-                        switch (user.Role)
-                        {
-                            case "Admin":
-                                return RedirectToAction("Dashboard", "Admin");
-
-                            case "Donor":
-                                return RedirectToAction("DonorHome", "Donor");
-
-                            case "Volunteer":
-                                return RedirectToAction("VolunteerHome", "Volunteer");
-
-                            default:
-                                return RedirectToAction("Index", "Home");
-                        }
-                    }
-                }
-
-                ModelState.AddModelError("", "Login unsuccessful. Please try again.");
-                Console.WriteLine("Login POST triggered");
-
+                ModelState.AddModelError("", "Invalid login data.");
+                return View(model);
             }
 
-            return View(model);
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.UserEmail == model.UserEmail);
+
+            if (user == null)
+            {
+                ModelState.AddModelError("", "User not found.");
+                return View(model);
+            }
+
+            var hasher = new PasswordHasher<User>();
+            var result = hasher.VerifyHashedPassword(user, user.Password, model.Password);
+
+            if (result != PasswordVerificationResult.Success)
+            {
+                ModelState.AddModelError("", "Incorrect password.");
+                return View(model);
+            }
+
+            //  Sign in the user using cookie authentication
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, user.UserEmail),
+        new Claim(ClaimTypes.Role, user.Role)
+    };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            // Redirect based on role
+            return user.Role switch
+            {
+                "Admin" => RedirectToAction("Dashboard", "Admin"),
+                "Donor" => RedirectToAction("DonorHome", "Donor"),
+                "Volunteer" => RedirectToAction("VolunteerHome", "Volunteer"),
+                _ => RedirectToAction("Index", "Home")
+            };
         }
     }
-}
+    }
 

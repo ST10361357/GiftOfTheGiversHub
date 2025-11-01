@@ -1,0 +1,70 @@
+﻿@model GiftOfTheGiversHub.Models.IncidentModel
+
+
+<h2>Report an Incident</h2>
+
+<form asp-action="ReportIncident" asp-controller="Incident" method="post">
+    <div>
+        <label asp-for="ReporterName"></label>
+        <input asp-for="ReporterName" />
+        <span asp-validation-for="ReporterName"></span>
+    </div>
+
+    <div>
+        <label asp-for="ReporterEmail"></label>
+        <input asp-for="ReporterEmail" />
+        <span asp-validation-for="ReporterEmail"></span>
+    </div>
+
+    <div>
+        <label asp-for="IncidentType"></label>
+        <select asp-for="IncidentType">
+            <option>Medical Emergency</option>
+            <option>Natural Disaster</option>
+            <option>Food Shortage</option>
+            <option>Water Crisis</option>
+            <option>Other</option>
+        </select>
+        <span asp-validation-for="IncidentType"></span>
+    </div>
+
+    <div>
+        <label asp-for="Location"></label>
+        <input asp-for="Location" />
+        <span asp-validation-for="Location"></span>
+    </div>
+
+    <div>
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description"></textarea>
+        <span asp-validation-for="Description"></span>
+    </div>
+
+    <div>
+        <label asp-for="UrgencyLevel"></label>
+        <select asp-for="UrgencyLevel">
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
+            <option>Critical</option>
+        </select>
+        <span asp-validation-for="UrgencyLevel"></span>
+    </div>
+
+    <div>
+        <label asp-for="DateReported"></label>
+        <input asp-for="DateReported" type="date" />
+        <span asp-validation-for="DateReported"></span>
+
+    </div>
+
+    <button type="submit">Submit Report</button>
+    <button type="button" onclick="location.href='@Url.Action("LandingPage", "Home")'">Back</button>
+
+</form>
+<!--  client-side validation scripts -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

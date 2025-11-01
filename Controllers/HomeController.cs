@@ -22,7 +22,12 @@ namespace GiftOfTheGiversHub.Controllers
         {
             return View();
         }
-       
+        [HttpGet]
+        public IActionResult LandingPage()
+        {
+            return View();
+        }
+
 
 
     }

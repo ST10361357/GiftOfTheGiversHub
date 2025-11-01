@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using GiftOfTheGiversHub.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace GiftOfTheGiversHub.Data
@@ -13,6 +14,7 @@ namespace GiftOfTheGiversHub.Data
         // eleminate conflicy with IdentityDbContext.Users
         public DbSet<User> Users { get; set; }
         public DbSet<RoleChangeLog> RoleChangeLogs { get; set; }
+        public DbSet<IncidentModel> Incidents { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

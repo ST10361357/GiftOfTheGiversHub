@@ -18,7 +18,8 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background-color: #222;
 }
 
 /* Form container */
@@ -28,9 +29,9 @@ form {
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 168, 89, 0.3);
     max-width: 500px;
-    margin-bottom: 3rem;
-    
+    margin: 0 auto 3rem auto; /* top, horizontal, bottom */
 }
+
 
 /* Form labels */
 label {
@@ -69,7 +70,7 @@ span[data-valmsg-for] {
 }
 
 /* Submit buttons */
-button[type="submit"] {
+button {
     background-color: #00a859;
     color: #fff;
     border: none;
@@ -80,9 +81,11 @@ button[type="submit"] {
     transition: background-color 0.3s ease;
 }
 
-    button[type="submit"]:hover {
+    button:hover {
         background-color: #00cc66;
     }
 
-
-
+/* white table text */
+td {
+    color: #fff;
+}
