@@ -1,41 +1,67 @@
-﻿@model GiftOfTheGiversHub.Models.VolunteerModel
+﻿@model GiftOfTheGiversHub.Models.VolunteerPageViewModel
 
 @{
-    ViewData["Title"] = "Register Volunteer";
+    ViewData["Title"] = "Add Volunteer";
 }
 
 <div class="container mt-5">
-    <h2 class="mb-4 text-center">Register New Volunteer</h2>
+    <h2 class="mb-4 text-center" style="color: #007BFF;">Add New Volunteer</h2>
 
     <form asp-action="Create" method="post" class="w-50 mx-auto">
         <div class="mb-3">
-            <label asp-for="VolunteerName" class="form-label">Name</label>
-            <input asp-for="VolunteerName" class="form-control" />
-            <span asp-validation-for="VolunteerName" class="text-danger"></span>
+            <label asp-for="NewVolunteer.VolunteerName" class="form-label">Name</label>
+            <input asp-for="NewVolunteer.VolunteerName" class="form-control" />
+            <span asp-validation-for="NewVolunteer.VolunteerName" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label asp-for="VolunteerEmail" class="form-label">Email</label>
-            <input asp-for="VolunteerEmail" class="form-control" />
-            <span asp-validation-for="VolunteerEmail" class="text-danger"></span>
+            <label asp-for="NewVolunteer.VolunteerEmail" class="form-label">Email</label>
+            <input asp-for="NewVolunteer.VolunteerEmail" class="form-control" />
+            <span asp-validation-for="NewVolunteer.VolunteerEmail" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label asp-for="Skills" class="form-label">Skills</label>
-            <input asp-for="Skills" class="form-control" />
+            <label asp-for="NewVolunteer.Skills" class="form-label">Skills</label>
+            <input asp-for="NewVolunteer.Skills" class="form-control" />
         </div>
 
         <div class="mb-3">
-            <label asp-for="Availability" class="form-label">Availability</label>
-            <input asp-for="Availability" class="form-control" />
+            <label asp-for="NewVolunteer.Availability" class="form-label">Availability</label>
+            <input asp-for="NewVolunteer.Availability" class="form-control" />
         </div>
 
-        <button type="submit" class="btn btn-success">Register Volunteer</button>
+        <button type="submit" class="btn btn-primary">Add Volunteer</button>
+        <button type="button" onclick="location.href='@Url.Action("MyIncidents", "Volunteer")'">Assigned Incidents</button>
+
     </form>
+</div>
+
+<div class="container mt-5">
+    <h3 class="mb-3 text-center" style="color: #28a745;">Registered Volunteers</h3>
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Skills</th>
+                <th>Availability</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var volunteer in Model.VolunteerList)
+            {
+                <tr>
+                    <td>@volunteer.VolunteerName</td>
+                    <td>@volunteer.VolunteerEmail</td>
+                    <td>@volunteer.Skills</td>
+                    <td>@volunteer.Availability</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
-
 

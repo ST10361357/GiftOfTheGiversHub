@@ -1,70 +1,121 @@
-﻿@model GiftOfTheGiversHub.Models.IncidentModel
+﻿@model GiftOfTheGiversHub.Models.IncidentPageViewModel
 
+@{
+    ViewData["Title"] = "Report Incident";
+}
 
-<h2>Report an Incident</h2>
+<div class="container mt-5">
 
-<form asp-action="ReportIncident" asp-controller="Incident" method="post">
-    <div>
-        <label asp-for="ReporterName"></label>
-        <input asp-for="ReporterName" />
-        <span asp-validation-for="ReporterName"></span>
-    </div>
+    <h2 class="mb-4 text-center" style="color: #dc3545;">Report New Incident</h2>
+    <div asp-validation-summary="All" class="text-danger"></div>
 
-    <div>
-        <label asp-for="ReporterEmail"></label>
-        <input asp-for="ReporterEmail" />
-        <span asp-validation-for="ReporterEmail"></span>
-    </div>
+    <form asp-action="Create" asp-controller="Incident" method="post" class="w-50 mx-auto">
+        @Html.AntiForgeryToken()<!--prevents errors-->
+        <!--report name-->
+        <div class="mb-3">
+            <label asp-for="NewIncident.ReporterName" class="form-label">Name</label>
+            <input asp-for="NewIncident.ReporterName" class="form-control" />
+            <span asp-validation-for="NewIncident.ReporterName" class="text-danger"></span>
 
-    <div>
-        <label asp-for="IncidentType"></label>
-        <select asp-for="IncidentType">
-            <option>Medical Emergency</option>
-            <option>Natural Disaster</option>
-            <option>Food Shortage</option>
-            <option>Water Crisis</option>
-            <option>Other</option>
-        </select>
-        <span asp-validation-for="IncidentType"></span>
-    </div>
+        </div>
 
-    <div>
-        <label asp-for="Location"></label>
-        <input asp-for="Location" />
-        <span asp-validation-for="Location"></span>
-    </div>
+        <!--reporter  email-->
+        <div class="mb-3">
+            <label asp-for="NewIncident.ReporterEmail" class="form-label">Email</label>
+            <input asp-for="NewIncident.ReporterEmail" class="form-control" />
+            <span asp-validation-for="NewIncident.ReporterEmail" class="text-danger"></span>
+        </div>
 
-    <div>
-        <label asp-for="Description"></label>
-        <textarea asp-for="Description"></textarea>
-        <span asp-validation-for="Description"></span>
-    </div>
+        <!--incident location-->
+        <div class="mb-3">
+            <label asp-for="NewIncident.Location" class="form-label">Location</label>
+            <input asp-for="NewIncident.Location" class="form-control" />
+            <span asp-validation-for="NewIncident.Location" class="text-danger"></span>
+        </div>
 
-    <div>
-        <label asp-for="UrgencyLevel"></label>
-        <select asp-for="UrgencyLevel">
-            <option>Low</option>
-            <option>Medium</option>
-            <option>High</option>
-            <option>Critical</option>
-        </select>
-        <span asp-validation-for="UrgencyLevel"></span>
-    </div>
+        <div class="mb-3">
+            <label asp-for="NewIncident.IncidentType" class="form-label">Incident Type</label>
+            <select asp-for="NewIncident.IncidentType" class="form-select">
+                <option value="">-- Select a Disaster Type --</option>
+                <option>Flood</option>
+                <option>Drought</option>
+                <option>Earthquake</option>
+                <option>Fire</option>
+                <option>Famine</option>
+                <option>Conflict Zone</option>
+                <option>Refugee Crisis</option>
+                <option>Medical Emergency</option>
+                <option>COVID-19 Response</option>
+                <option>Cholera Outbreak</option>
+                <option>Search and Rescue</option>
+            </select>
+            <span asp-validation-for="NewIncident.IncidentType" class="text-danger"></span>
+        </div>
 
-    <div>
-        <label asp-for="DateReported"></label>
-        <input asp-for="DateReported" type="date" />
-        <span asp-validation-for="DateReported"></span>
+        <div class="mb-3">
+            <label asp-for="NewIncident.Description" class="form-label">Description</label>
+            <textarea asp-for="NewIncident.Description" class="form-control"></textarea>
+            <span asp-validation-for="NewIncident.Description" class="text-danger"></span>
+        </div>
 
-    </div>
+        <div class="mb-3">
+            <label asp-for="NewIncident.UrgencyLevel" class="form-label">Urgency Level</label>
+            <select asp-for="NewIncident.UrgencyLevel" class="form-select">
+                <option value="">-- Select Urgency --</option>
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
+                <option>Critical</option>
+                <span asp-validation-for="NewIncident.UrgencyLevel" class="text-danger"></span>
+            </select>
+        </div>
+        
+        <div class="mb-3">
+            <label asp-for="NewIncident.DateReported" class="form-label">Date Reported</label>
+            <input asp-for="NewIncident.DateReported" class="form-control"  />
+        </div>
 
-    <button type="submit">Submit Report</button>
-    <button type="button" onclick="location.href='@Url.Action("LandingPage", "Home")'">Back</button>
+        <button type="submit" class="btn btn-danger">Submit Incident</button>
+    </form>
+</div>
 
-</form>
-<!--  client-side validation scripts -->
+<div class="container mt-5">
+    <h3 class="mb-3 text-center" style="color: #28a745;">Reported Incidents</h3>
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Reporter</th>
+                <th>Email</th>
+                <th>Type</th>
+                <th>Location</th>
+                <th>Urgency</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var incident in Model.IncidentList)
+            {
+                <tr>
+                    <td>@incident.ReporterName</td>
+                    <td>@incident.ReporterEmail</td>
+                    <td>@incident.IncidentType</td>
+                    <td>@incident.Location</td>
+                    <td>@incident.UrgencyLevel</td>
+                    <td>@incident.Status</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    <partial name="_ValidationScriptsPartial" />
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+            alert("@TempData["SuccessMessage"]");
+        </script>
     }
 }
+

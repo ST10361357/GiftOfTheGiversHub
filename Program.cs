@@ -2,6 +2,7 @@ using GiftOfTheGiversHub.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
@@ -61,5 +62,8 @@ app.MapControllerRoute(
         //pattern: "{controller=Home}/{action=Index}/{id?}");
         pattern: "{controller=Home}/{action=LandingPage}/{id?}");
 app.MapRazorPages();
+
+// Rotativa setup/pdf download
+RotativaConfiguration.Setup(app.Environment.WebRootPath, "Rotativa");
 
 app.Run();

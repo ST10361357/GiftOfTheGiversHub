@@ -1,0 +1,34 @@
+﻿@model IEnumerable<GiftOfTheGiversHub.Models.IncidentModel>
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center" style="color: #007BFF;">My Assigned Incidents</h2>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Type</th>
+                <th>Location</th>
+                <th>Description</th>
+                <th>Urgency</th>
+                <th>Date Reported</th>
+                <th>Status</th>
+                <th>Assigned Donator</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var incident in Model)
+            {
+                <tr>
+                    <td>@incident.IncidentType</td>
+                    <td>@incident.Location</td>
+                    <td>@incident.Description</td>
+                    <td>@incident.UrgencyLevel</td>
+                    <td>@incident.DateReported.ToShortDateString()</td>
+                    <td>@incident.Status</td>
+                    <td>@incident.AssignedDonatorEmail ?? "Unassigned"</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+

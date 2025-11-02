@@ -5,7 +5,7 @@
 }
 
 <div class="container mt-5">
-    <h2 class="mb-4 text-center">Admin Dashboard</h2>
+    <h2 class="mb-4 text-center" style="color: #FF5733;">Admin Dashboard</h2>
 
     <!-- Toggle Buttons -->
     <div class="mb-4 text-center">
@@ -13,8 +13,32 @@
         <button class="btn btn-outline-secondary" onclick="toggleSection('staffTable')">Show/Hide Staff</button>
         <button class="btn btn-outline-success" onclick="toggleSection('volunteersTable')">Show/Hide Volunteers</button>
         <button class="btn btn-outline-warning" onclick="toggleSection('donatorsTable')">Show/Hide Donators</button>
-        <button class="btn btn-outline-dark" onclick="toggleSection('incidentsTable')">Show/Hide Incidents</button>
+        <button class="btn btn-outline-light" onclick="toggleSection('incidentsTable')">Show/Hide Incidents</button>
+        <button class="btn btn-outline-info" onclick="toggleSection('reportsSection')">Show/Hide Reports</button>
     </div>
+
+    <!-- Reports Section -->
+    <div id="reportsSection" class="mb-5 text-center">
+        <h3 class="text-primary" style="color: #FF5733;">Incident Reports</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Status Report</h5>
+                <canvas id="statusChart" width="400" height="400" style="background-color:#f8f9fa;"></canvas>
+                <a asp-action="DownloadStatusReport" class="btn btn-sm btn-danger mt-2">
+                    Download Status Report (PDF)
+                </a>
+            </div>
+            <div class="col-md-6">
+                <h5>Urgency Report</h5>
+                <canvas id="urgencyChart" width="400" height="400" style="background-color:#f8f9fa;"></canvas>                <a asp-action="DownloadUrgencyReport" class="btn btn-sm btn-danger mt-2">
+                    Download Urgency Report (PDF)
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+    
 
     <!-- Admins Table -->
     <div id="adminsTable" class="mb-5">
@@ -137,7 +161,18 @@
                         <td>@incident.Description</td>
                         <td>@incident.UrgencyLevel</td>
                         <td>@incident.DateReported.ToShortDateString()</td>
-                        <td>@incident.Status</td>
+                        <td>@incident.Status
+                            <form asp-action="UpdateStatus" method="post" class="d-flex gap-2">
+                                <input type="hidden" name="incidentId" value="@incident.IncidentId" />
+                                <select name="newStatus" class="form-select form-select-sm w-auto">
+                                    <option value="Pending" selected="@("Pending" == incident.Status)">Pending</option>
+                                    <option value="Assigned" selected="@("Assigned" == incident.Status)">Assigned</option>
+                                    <option value="In Progress" selected="@("In Progress" == incident.Status)">In Progress</option>
+                                    <option value="Resolved" selected="@("Resolved" == incident.Status)">Resolved</option>
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                            </form>
+                        </td>
                         <td>@incident.AssignedVolunteerEmail ?? "Unassigned"</td>
                         <td>
                             <form asp-action="AssignVolunteer" method="post" class="d-flex gap-2">
@@ -179,9 +214,40 @@
     }
 </script>
 
+<!-- Charts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Status Chart
+    var ctx1 = document.getElementById('statusChart').getContext('2d');
+    var statusChart = new Chart(ctx1, {
+        type: 'pie',
+        data: {
+            labels: @Html.Raw(Json.Serialize(Model.StatusReport.Select(s => s.Status))),
+            datasets: [{
+                data: @Html.Raw(Json.Serialize(Model.StatusReport.Select(s => s.Count))),
+                backgroundColor: ['#FF5733','#28a745','#007bff','#ffc107']
+            }]
+        }
+    });
+
+    // Urgency Chart
+    var ctx2 = document.getElementById('urgencyChart').getContext('2d');
+    var urgencyChart = new Chart(ctx2, {
+        type: 'pie',
+        data: {
+            labels: @Html.Raw(Json.Serialize(Model.UrgencyReport.Select(u => u.UrgencyLevel))),
+            datasets: [{
+                data: @Html.Raw(Json.Serialize(Model.UrgencyReport.Select(u => u.Count))),
+                backgroundColor: ['#dc3545','#fd7e14','#ffc107','#20c997']
+            }]
+        }
+    });
+</script>
+
+
 <!-- Optional: Hide all sections by default -->
 <style>
-    #adminsTable, #staffTable, #volunteersTable, #donatorsTable, #incidentsTable {
+    #adminsTable, #staffTable, #volunteersTable, #donatorsTable, #incidentsTable, #reportsSection {
         display: none;
     }
 </style>

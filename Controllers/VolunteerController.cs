@@ -1,5 +1,8 @@
 ﻿using GiftOfTheGiversHub.Data;
+using GiftOfTheGiversHub.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using static System.Collections.Specialized.BitVector32;
 
 namespace GiftOfTheGiversHub.Controllers
@@ -16,26 +19,45 @@ namespace GiftOfTheGiversHub.Controllers
         }
 
         // GET: Volunteer
-        public IActionResult Volunteer()
+        public async Task<IActionResult> Volunteer()
         {
-            return View();
+            var model = new VolunteerPageViewModel
+            {
+                VolunteerList = await _context.Volunteers.ToListAsync()
+            };
+            return View(model);
         }
 
         // POST: Volunteer
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(User user)
+        public async Task<IActionResult> Create(VolunteerPageViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
-                return View(user);
+                viewModel.VolunteerList = await _context.Volunteers.ToListAsync();
+                return View("Volunteer", viewModel);
             }
 
-            user.Role = "Volunteer"; 
-            _context.Users.Add(user);
+            _context.Volunteers.Add(viewModel.NewVolunteer);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Dashboard", "Admin");
+            return RedirectToAction("Volunteer");
         }
+
+        //assigned incidents
+        [Authorize(Roles = "Volunteer")]
+        public async Task<IActionResult> MyIncidents()
+        {
+            var email = User.Identity?.Name;
+
+            var incidents = await _context.Incidents
+                .Where(i => i.AssignedVolunteerEmail == email)
+                .ToListAsync();
+
+            return View(incidents);
+        }
+
+
     }
 }

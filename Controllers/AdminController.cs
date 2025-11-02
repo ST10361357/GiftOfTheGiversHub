@@ -3,6 +3,7 @@ using GiftOfTheGiversHub.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 
 
 namespace GiftOfTheGiversHub.Controllers
@@ -153,6 +154,102 @@ namespace GiftOfTheGiversHub.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Dashboard");
+        }
+
+        // POST: Update Incident Status
+        [HttpPost]
+        public async Task<IActionResult> UpdateStatus(int incidentId, string newStatus)
+        {
+            var incident = await _context.Incidents.FindAsync(incidentId);
+            if (incident == null)
+            {
+                return NotFound();
+            }
+
+            incident.Status = newStatus;
+            _context.Incidents.Update(incident);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Dashboard");
+
+        }
+   
+
+// Status & Urgency Reports
+[HttpGet]
+        public async Task<IActionResult> StatusReport()
+        {
+            var incidents = await _context.Incidents.ToListAsync();
+
+            var statusReport = incidents
+                .GroupBy(i => i.Status)
+                .Select(g => new StatusReportItem
+                {
+                    Status = g.Key,
+                    Count = g.Count()
+                })
+                .ToList();
+
+            return View(statusReport); // expects a Razor view: Views/Admin/StatusReport.cshtml
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> UrgencyReport()
+        {
+            var incidents = await _context.Incidents.ToListAsync();
+
+            var urgencyReport = incidents
+                .GroupBy(i => i.UrgencyLevel)
+                .Select(g => new UrgencyReportItem
+                {
+                    UrgencyLevel = g.Key,
+                    Count = g.Count()
+                })
+                .ToList();
+
+            return View(urgencyReport); // expects a Razor view: Views/Admin/UrgencyReport.cshtml
+        }
+
+        // Optional: Export Status Report as PDF
+        [HttpGet]
+        public async Task<IActionResult> DownloadStatusReport()
+        {
+            var incidents = await _context.Incidents.ToListAsync();
+
+            var statusReport = incidents
+                .GroupBy(i => i.Status)
+                .Select(g => new StatusReportItem
+                {
+                    Status = g.Key,
+                    Count = g.Count()
+                })
+                .ToList();
+
+            return new ViewAsPdf("StatusReportPdf", statusReport)
+            {
+                FileName = "IncidentStatusReport.pdf"
+            };
+        }
+
+        // Optional: Export Urgency Report as PDF
+        [HttpGet]
+        public async Task<IActionResult> DownloadUrgencyReport()
+        {
+            var incidents = await _context.Incidents.ToListAsync();
+
+            var urgencyReport = incidents
+                .GroupBy(i => i.UrgencyLevel)
+                .Select(g => new UrgencyReportItem
+                {
+                    UrgencyLevel = g.Key,
+                    Count = g.Count()
+                })
+                .ToList();
+
+            return new ViewAsPdf("UrgencyReportPdf", urgencyReport)
+            {
+                FileName = "IncidentUrgencyReport.pdf"
+            };
         }
     }
 }

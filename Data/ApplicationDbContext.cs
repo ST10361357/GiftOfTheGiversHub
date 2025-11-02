@@ -16,6 +16,8 @@ namespace GiftOfTheGiversHub.Data
         public DbSet<RoleChangeLog> RoleChangeLogs { get; set; }
         public DbSet<IncidentModel> Incidents { get; set; }
         public DbSet<DonatorModel> Donators { get; set; }
+        public DbSet<VolunteerModel> Volunteers { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
