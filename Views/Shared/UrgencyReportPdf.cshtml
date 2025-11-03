@@ -1,0 +1,25 @@
+﻿@model List<GiftOfTheGiversHub.Models.UrgencyReportItem>
+
+@{
+    Layout = null;
+}
+
+<h2>Urgency Report</h2>
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Urgency Level</th>
+            <th>Count</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.UrgencyLevel</td>
+                <td>@item.Count</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

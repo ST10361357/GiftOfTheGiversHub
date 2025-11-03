@@ -1,0 +1,24 @@
+﻿@model List<GiftOfTheGiversHub.Models.StatusReportItem>
+
+@{
+    Layout = null;
+}
+
+<h2>Status Report</h2>
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Status</th>
+            <th>Count</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Status</td>
+                <td>@item.Count</td>
+            </tr>
+        }
+    </tbody>
+</table>
