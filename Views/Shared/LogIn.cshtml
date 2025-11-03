@@ -1,7 +1,11 @@
 ﻿@model GiftOfTheGiversHub.Models.LogInModel
 
+@{
+    ViewData["Title"] = "Log In";
+}
 
-<h2>Login</h2>
+<div class="container mt-5">
+    <h2 class="mb-4 text-center" style="color: #FF5733;">Log In</h2>
 
 <form asp-action="Login" asp-controller="Account"  method="post">
     <div>
@@ -19,11 +23,20 @@
     <button type="submit">Login</button>
     <button type="button" onclick="location.href='@Url.Action("LandingPage", "Home")'" >Back</button>
 </form>
-
+</div>
 <!--  client-side validation scripts -->
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-}
 
+    <!-- Login success  -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var loginSuccess = '@TempData["LoginSuccess"]';
+            if (loginSuccess && loginSuccess.toLowerCase() === "true") {
+                alert("Login successful!");
+            }
+        });
+    </script>
+}

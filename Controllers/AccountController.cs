@@ -46,6 +46,8 @@ namespace GiftOfTheGiversHub.Controllers
                 _context.Users.Add(model);
                 await _context.SaveChangesAsync();
 
+                TempData["RegisterSuccess"] = "true";
+
                 return RedirectToAction("Login");
             }
 
@@ -100,6 +102,7 @@ namespace GiftOfTheGiversHub.Controllers
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
+            TempData["LoginSuccess"] = "true";
             // Redirect based on role
             return user.Role switch
             {
